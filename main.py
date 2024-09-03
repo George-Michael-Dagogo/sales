@@ -1,12 +1,14 @@
-from newsapi import NewsApiClient
-import pandas as pandas
+from requests_html import HTMLSession
+import nest_asyncio
 
-newsapi = NewsApiClient(api_key='ff4373852c2343a98303951439854f8c')
+nest_asyncio.apply()
 
-# /v2/top-headlines
-top_headlines = newsapi.get_top_headlines(
-                                          category='business',
-                                          language='en',
-                                        )
 
-print(top_headlines)
+
+session = HTMLSession()
+r = session.get('https://www.ncaa.com/scoreboard/football/fbs')
+r.html.render(timeout=10)
+elements = r.html.find('.gamePod_content-pod_container', first=True)
+
+print(elements.text)
+session.close()
